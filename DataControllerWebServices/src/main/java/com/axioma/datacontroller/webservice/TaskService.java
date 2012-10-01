@@ -1,31 +1,20 @@
 package com.axioma.datacontroller.webservice;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import java.util.SortedSet;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 
-import com.axioma.datacontroller.DataControllerFactory;
 import com.axioma.datacontroller.IDataController;
-import com.axioma.datacontroller.exception.IncompatibleSchemaException;
 import com.axioma.datacontroller.webservice.util.DatabaseConnector;
 import com.axioma.datacontroller.webservice.util.TaskConverter;
-import com.axioma.db.commons.model.DataSourceProperties;
 import com.axioma.model.task.Task;
 import com.axioma.model.task.TaskType;
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
 @Path("/TaskService")
@@ -35,8 +24,9 @@ public class TaskService {
 	ServletContext context;
 
   @GET
+  @Path("{taskType}")
   @Produces(MediaType.APPLICATION_JSON)
-  public String sayJsonHello() {
+  public String sayJsonHello(@PathParam("taskType") String taskType) {
     Gson gson = new Gson();
 //    Map<String, String> params = Maps.newHashMap();
 //    params.put("riskmodel", "US2AxiomaMH");
@@ -47,7 +37,7 @@ public class TaskService {
 //    return task;
 	  
 	  IDataController dc = DatabaseConnector.getDataController(context);
-	  SortedSet<Task> tasks = dc.getTasks(null, TaskType.REPORT, false);
+	  SortedSet<Task> tasks = dc.getTasks(null, TaskType.valueOf(taskType), false);
 	  
 	  return gson.toJson(TaskConverter.getProxyTasks(tasks));
   }   
