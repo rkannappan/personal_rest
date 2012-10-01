@@ -13,10 +13,9 @@ import com.axioma.db.commons.model.DataSourceProperties;
 
 public class DatabaseConnector {
 	
-   private static final String DB_PROPS_PATH = "WEB-INF/classes/server.properties";
+   public static final String DB_PROPS_PATH = "WEB-INF/classes/servers.properties";
 	
    public static IDataController getDataController(final ServletContext context) {
-      // only recreate entire DataController (and all bindings) if properties have changed, or it's invalid
       try {
          return DataControllerFactory.getInstance(DatabaseConnector.getDataSourceProperties(context),
                      DataControllerFactory.DEFAULT_USER_NAME, DataControllerFactory.DEFAULT_PASSWORD);
