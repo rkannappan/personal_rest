@@ -73,8 +73,7 @@ public class TaskService {
 		connection.start();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		final DateTime startTime = this.getLatestTaskInstanceStartTime(taskType, taskName);
-		System.out.println("Queue is " + taskName + startTime.toString());
-		final Destination destination = session.createQueue(taskName + startTime.toString());
+		final Destination destination = session.createQueue(taskName + startTime.getMillis());
 		consumer = session.createConsumer(destination);
 
 			final Message m = consumer.receive(1000);
