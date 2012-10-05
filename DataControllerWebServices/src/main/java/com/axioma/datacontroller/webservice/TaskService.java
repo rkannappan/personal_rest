@@ -15,6 +15,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -51,18 +52,19 @@ public class TaskService {
   @GET
   @Path("/run/{taskType}/{taskName}")
   @Produces(MediaType.APPLICATION_JSON)
-  public String runTaskByName(@PathParam("taskType") String taskType, @PathParam("taskName") String taskName) {
+  public String runTaskByName(@PathParam("taskType") String taskType, @PathParam("taskName") String taskName, 
+		  @QueryParam("allEventsQueueName") String allEventsQueueName, @QueryParam("progressEventsQueueName") String progressEventsQueueName) {
       String serversProps = context.getRealPath(DatabaseConnector.DB_PROPS_PATH);
       
-      TaskCommander.runMain(new String[] { "-s", serversProps, "-t", taskType, "-r", taskName });
+      TaskCommander.runMain(new String[] { "-s", serversProps, "-t", taskType, "-r", taskName, "-g", allEventsQueueName, "-p", progressEventsQueueName});
 	  
 	 return null;
   }
   
   @GET
-  @Path("/progress/{taskType}/{taskName}")
+  @Path("/run/events")
   @Produces(MediaType.APPLICATION_JSON)
-  public String getProgressByTaskName(@PathParam("taskType") String taskType, @PathParam("taskName") String taskName) {
+  public String getEventInfo(@QueryParam("eventQueueName") String eventQueueName) {
 	  Connection connection = null;
 	  Session session = null;
 	  MessageConsumer consumer = null;
@@ -72,8 +74,7 @@ public class TaskService {
 		connection = connectionFactory.createConnection();
 		connection.start();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		final DateTime startTime = this.getLatestTaskInstanceStartTime(taskType, taskName);
-		final Destination destination = session.createQueue(taskName + startTime.getMillis());
+		final Destination destination = session.createQueue(eventQueueName);
 		consumer = session.createConsumer(destination);
 
 			final Message m = consumer.receive(1000);
@@ -103,11 +104,5 @@ public class TaskService {
 	  }
 	  
 	  return null;
-  }
-  
-  private DateTime getLatestTaskInstanceStartTime(final String taskType, final String taskName) {
-	  IDataController dc = DatabaseConnector.getDataController(context);
-	  TaskInstance ti = dc.getLatest(new Task(taskName, TaskType.valueOf(taskType)));
-	  return ti.getStartDateTime();
-  }
+  }  
 }
