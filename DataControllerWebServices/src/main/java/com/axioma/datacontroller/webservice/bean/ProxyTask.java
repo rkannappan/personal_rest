@@ -16,7 +16,7 @@ public class ProxyTask {
 	
 	private Map<String, Collection<String>> params = Maps.newHashMap();
 	
-	public ProxyTask() {	
+   public ProxyTask() {
 	}
 	
 	public ProxyTask(final String name, final String desc, final String type, final Map<String, Collection<String>> params) {
