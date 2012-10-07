@@ -11,6 +11,9 @@ import com.axioma.datacontroller.IDataController;
 import com.axioma.datacontroller.exception.IncompatibleSchemaException;
 import com.axioma.db.commons.model.DataSourceProperties;
 
+/**
+ * @author rkannappan
+ */
 public class DatabaseConnector {
 	
    public static final String DB_PROPS_PATH = "WEB-INF/classes/servers.properties";

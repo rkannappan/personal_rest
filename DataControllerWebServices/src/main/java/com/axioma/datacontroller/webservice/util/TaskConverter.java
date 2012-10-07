@@ -6,6 +6,9 @@ import com.axioma.datacontroller.webservice.bean.ProxyTask;
 import com.axioma.model.task.Task;
 import com.google.common.collect.Sets;
 
+/**
+ * @author rkannappan
+ */
 public class TaskConverter {
 	
 	public static Set<ProxyTask> getProxyTasks(final Set<Task> tasks) {
@@ -18,5 +21,4 @@ public class TaskConverter {
 		
 		return proxyTasks;
 	}
-
 }
